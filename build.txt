@@ -1,0 +1,3 @@
+displayName = Glowmask Helper
+author = mimig298
+version = 0.1
