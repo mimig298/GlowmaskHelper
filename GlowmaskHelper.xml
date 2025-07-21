@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GlowmaskHelper</name>
+    </assembly>
+    <members>
+        <member name="T:GlowmaskHelper.Content.AutoloadGlowmask">
+            <summary>
+            This attribute annotates a <see cref="T:Terraria.ModLoader.ModItem"/> or <see cref="T:Terraria.ModLoader.ModNPC"/> class to indicate that the game should autoload a glowmask texture for this entity.
+            <para/> The glowmask texture will be autoloaded from <see cref="P:Terraria.ModLoader.ModItem.Texture"/> + "_Glow". An error will be thrown if this texture is not found.
+            </summary>
+        </member>
+        <member name="T:GlowmaskHelper.Content.GlowmaskLoader">
+            <summary>
+            This class serves as the central place to store and register custom glowmasks, and can be used to access information about them.<br/>
+            Using an <see cref="T:GlowmaskHelper.Content.AutoloadGlowmask"/> attribute in your classes will do all the special logic for you, so you usually don't need to use this class if that's the case.
+            <para/> Currently only supports adding glowmasks to <see cref="T:Terraria.Item"/>s<see/> and <see cref="T:Terraria.NPC"/>s<see/>.
+            </summary>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AddGlowmaskTexture(System.Int32,System.String,System.Type)">
+            <summary>
+            Assigns a glowmask texture to the given entity type if possible.
+            </summary>
+            <param name="type">Type of the entity.</param>
+            <param name="glowmaskTexture">The glowmask texture path.</param>
+            <param name="entityClass">The class the entity belongs to.</param>
+            <returns>The glowmask texture slot or -1 if adding the glowmask texture failed.</returns>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AddGlowmaskTexture(Terraria.Entity,System.String)">
+            <summary>
+            Assigns a glowmask texture to the given entity if possible.
+            </summary>
+            <param name="entity">The entity.</param>
+            <param name="glowmaskTexture">The glowmask texture path.</param>
+            <returns>The glowmask texture slot. Returns -1 if the entity isn't supported by the mod.</returns>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot(System.String)">
+            <summary>
+            Gets the index of the glowmask texture corresponding to the given texture path.
+            </summary>
+            <param name="texture">The path to the glowmask texture.</param>
+            <returns>The slot of the glowmask texture, -1 if not found.</returns>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot(System.Int32,System.Type)">
+            <summary>
+            Gets the index of the glowmask texture corresponding to the given entity's type.
+            </summary>
+            <param name="type">The type of the entity.</param>
+            <param name="entityClass">The class the entity belongs to.</param>
+            <returns>The slot of the glowmask texture, -1 if not found.</returns>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot(Terraria.Entity)">
+            <summary>
+            Gets the index of the glowmask texture corresponding to the given entity's type.
+            </summary>
+            <param name="entity">The entity.</param>
+            <returns>The slot of the glowmask texture, -1 if not found.</returns>
+        </member>
+    </members>
+</doc>

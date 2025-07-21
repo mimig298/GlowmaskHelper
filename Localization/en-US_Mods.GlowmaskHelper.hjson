@@ -1,2 +1,25 @@
-# This file will automatically update with entries for new content after a build and reload.
+Configs: {
+	Configs: {
+		DisplayName: GlowmaskHelper Configs
+		Headers.Debug: Debug settings
 
+		LoadDebugTests: {
+			Label: Load Debug Tests
+			Tooltip:
+				'''
+				Toggle this to enable loading the debug entities used to show off or test this mod's features.
+				They are never seen during normal gameplay and require a cheat interface to spawn.
+				'''
+		}
+	}
+}
+
+Items: {
+	TestItem: {
+		DisplayName: Test Item
+		Tooltip: ""
+	}
+}
+
+NPCs.TestNPC.DisplayName: Test NPC
+Projectiles.TestProjectile.DisplayName: Test Projectile

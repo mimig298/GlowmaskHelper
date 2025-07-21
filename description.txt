@@ -1,1 +1,6 @@
-Modify this file with a description of your mod.
+Glowmask Helper is a library mod designed to help modders create glowmasks for their custom items and NPCs with minimal effort.
+
+To start using it, simply add it as a strong reference in your mod, which is explained in depth in the tModLoader wiki and ours as well.
+For extra information on how to use Glowmask Helper, visit the wiki in our GitHub repository, available by clicking the "Homepage" button below.
+
+More general information about this mod can be found in its Steam Workshop page.

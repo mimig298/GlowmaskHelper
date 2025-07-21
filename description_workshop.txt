@@ -1,1 +1,16 @@
-This description will show up on the steam page, check out https://steamcommunity.com/comment/Guide/formattinghelp.
+[b] This is a library mod. It doesn't directly add any content to the game and is meant to be used as a dependency by other mods. [/b]
+
+Are you tired of having to write the same long code every time you want to add a glowmask to something in your mod? Or do you just not know how to do it?
+This mod makes this process automatic for you!
+
+With just one or two lines of code, you can apply a glowmask texture to any item or NPC you create! (after you set up the references, but that's easy)
+
+For the full guide on how to use Glowmask Helper, visit our [url=https://github.com/mimig298/GlowmaskHelper] Github repository [/url], but here's a brief explanation anyways:
+
+[olist]
+	[*]Download and enable Glowmask Helper
+	[*]Set up the mod reference (the [url=https://github.com/tModLoader/tModLoader/wiki/Expert-Cross-Mod-Content#strong-references-aka-modreferences-expert] tModLoader wiki [/url] teaches you how to do that)
+	[*]Add the glowmask texture to the same path and with the same name as the regular sprite, but suffix it with "_Glow"
+	[*]Add [code] using GlowmaskHelper.Content; [/code] to your file and [code] [AutoloadGlowmask] [/code] as an attribute to your class
+	[*]Build your mod and see the results in-game!
+[/olist]
