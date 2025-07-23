@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using ReLogic.Utilities;
 using Terraria;
 using Terraria.GameContent;
@@ -45,8 +46,6 @@ public static class GlowmaskLoader
                 AddGlowmaskTexture(modNPC.NPC.type, modNPC.Texture + "_Glow", typeof(NPC));
             }
         }
-
-        ResizeAndFillArrays();
     }
 
     private static short RegisterAndCheckGlowmaskTexture(string glowmaskTexture)
@@ -57,8 +56,7 @@ public static class GlowmaskLoader
         short slot = nextGlowmask++;
         glowmasks[glowmaskTexture] = slot;
 
-        if (!Main.dedServ)
-            ModContent.Request<Texture2D>(glowmaskTexture);
+        ModContent.Request<Texture2D>(glowmaskTexture, AssetRequestMode.DoNotLoad);
 
         return slot;
     }
@@ -98,6 +96,27 @@ public static class GlowmaskLoader
     }
 
     /// <summary>
+    /// Assigns a glowmask texture to the given mod type if possible.
+    /// </summary>
+    /// <param name="modType">The mod type.</param>
+    /// <param name="glowmaskTexture">The glowmask texture path. Defaults to <c>modType.Texture + "_Glow"</c></param>
+    /// <returns>The glowmask texture slot. Returns -1 if the mod type isn't supported by the mod.</returns>
+    public static short AddGlowmaskTexture(ModType modType, string glowmaskTexture = null)
+    {
+        if (modType is ModItem modItem)
+        {
+            glowmaskTexture ??= modItem.Texture + "_Glow";
+            return AddGlowmaskTexture(modItem.Type, glowmaskTexture, typeof(Item));
+        }
+        else if (modType is ModNPC modNPC)
+        {
+            glowmaskTexture ??= modNPC.Texture + "_Glow";
+            return AddGlowmaskTexture(modNPC.Type, glowmaskTexture, typeof(NPC));
+        }
+        return -1; // Not supported
+    }
+
+    /// <summary>
     /// Gets the index of the glowmask texture corresponding to the given texture path.
     /// </summary>
     /// <param name="texture">The path to the glowmask texture.</param>
@@ -131,7 +150,21 @@ public static class GlowmaskLoader
             return GetGlowmaskSlot(item.type, typeof(Item));
         if (entity is NPC npc)
             return GetGlowmaskSlot(npc.type, typeof(NPC));
-        return -1; // Not found
+        return -1; // Not supported
+    }
+
+    /// <summary>
+    /// Gets the index of the glowmask texture corresponding to the mod type's entity.
+    /// </summary>
+    /// <param name="modType">The mod type.</param>
+    /// <returns>The slot of the glowmask texture, -1 if not found.</returns>
+    public static short GetGlowmaskSlot(ModType modType)
+    {
+        if (modType is ModItem modItem)
+            return GetGlowmaskSlot(modItem.Type, typeof(Item));
+        if (modType is ModNPC modNPC)
+            return GetGlowmaskSlot(modNPC.Type, typeof(NPC));
+        return -1; // Not supported
     }
 
     internal static void ResizeAndFillArrays()
@@ -162,6 +195,12 @@ internal class GlowmaskLoaderSystem : ModSystem
         Mod.Logger.InfoFormat("Loaded {0} glowmasks", GlowmaskLoader.GlowmaskCount - GlowmaskLoader.VanillaGlowmaskCount);
     }
 
+    public override void PostSetupContent()
+    {
+        GlowmaskLoader.ResizeAndFillArrays();
+        Mod.Logger.InfoFormat("Glowmask texture array resized to {0} elements", TextureAssets.GlowMask.Length);
+    }
+
     public override void Unload()
     {
         int loadedGlowmasks = GlowmaskLoader.GlowmaskCount;
@@ -172,5 +211,6 @@ internal class GlowmaskLoaderSystem : ModSystem
             Mod.Logger.WarnFormat("{0} glowmasks failed to unload", remainingGlowmasks);
         else
             Mod.Logger.InfoFormat("Successfully unloaded {0} glowmasks", unloadedGlowmasks);
+        Mod.Logger.InfoFormat("Glowmask texture array resized to {0} elements", TextureAssets.GlowMask.Length);
     }
 }
