@@ -7,7 +7,7 @@
         <member name="T:GlowmaskHelper.Content.AutoloadGlowmask">
             <summary>
             This attribute annotates a <see cref="T:Terraria.ModLoader.ModItem"/> or <see cref="T:Terraria.ModLoader.ModNPC"/> class to indicate that the game should autoload a glowmask texture for this entity.
-            <para/> The glowmask texture will be autoloaded from <see cref="P:Terraria.ModLoader.ModItem.Texture"/> + "_Glow". An error will be thrown if this texture is not found.
+            <para/> The glowmask texture will be autoloaded from the regular texture + "_Glow". An error will be thrown if this texture is not found.
             </summary>
         </member>
         <member name="T:GlowmaskHelper.Content.GlowmaskLoader">
