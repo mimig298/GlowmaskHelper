@@ -23,7 +23,7 @@ internal class NPCGlowmasks : GlobalNPC
             return;
 
         Asset<Texture2D> originalTexture = TextureAssets.Npc[rCurrentNPC.type];
-        Asset<Texture2D> glowmask = TextureAssets.GlowMask[GlowmaskLoader.GetGlowmaskSlot(rCurrentNPC.type, typeof(NPC))];
+        Asset<Texture2D> glowmask = TextureAssets.GlowMask[GlowmaskLoader.GetGlowmaskSlot(rCurrentNPC)];
         Vector2 halfSize = rCurrentNPC.frame.Center();
         SpriteEffects spriteEffects = rCurrentNPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
         Vector2 drawPos = new(rCurrentNPC.position.X - screenPos.X + (rCurrentNPC.width / 2) - originalTexture.Width() * rCurrentNPC.scale / 2f + halfSize.X * rCurrentNPC.scale, rCurrentNPC.position.Y - screenPos.Y + rCurrentNPC.height - originalTexture.Height() * rCurrentNPC.scale / (float)Main.npcFrameCount[rCurrentNPC.type] + halfSize.Y * rCurrentNPC.scale);
