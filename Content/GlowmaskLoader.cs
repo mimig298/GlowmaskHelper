@@ -36,19 +36,25 @@ public static class GlowmaskLoader
         {
             if (modItem.GetType().GetAttribute<AutoloadGlowmask>() != null)
             {
-                modItem.Item.glowMask = AddGlowmaskTexture(modItem.Item.type, modItem.Texture + "_Glow", typeof(Item));
+                if (TryAddGlowmaskTexture(modItem.Item.type, modItem.Texture + "_Glow", typeof(Item), out short glowmaskSlot))
+                    modItem.Item.glowMask = glowmaskSlot;
             }
         }
         foreach (ModNPC modNPC in ModContent.GetContent<ModNPC>())
         {
             if (modNPC.GetType().GetAttribute<AutoloadGlowmask>() != null)
             {
-                AddGlowmaskTexture(modNPC.NPC.type, modNPC.Texture + "_Glow", typeof(NPC));
+                TryAddGlowmaskTexture(modNPC.NPC.type, modNPC.Texture + "_Glow", typeof(NPC), out _);
             }
         }
     }
 
-    private static short RegisterAndCheckGlowmaskTexture(string glowmaskTexture)
+    /// <summary>
+    /// Registers a glowmask texture but doesn't assign it to any entity type.
+    /// </summary>
+    /// <param name="glowmaskTexture">The path to the glowmask texture.</param>
+    /// <returns>The slot corresponding to the glowmask.</returns>
+    public static short RegisterGlowmaskTexture(string glowmaskTexture)
     {
         if (glowmasks.TryGetValue(glowmaskTexture, out short value))
             return value;
@@ -62,58 +68,86 @@ public static class GlowmaskLoader
     }
 
     /// <summary>
-    /// Assigns a glowmask texture to the given entity type if possible.
+    /// Assigns a glowmask slot to the given entity type if possible.
     /// </summary>
+    /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
     /// <param name="type">Type of the entity.</param>
-    /// <param name="glowmaskTexture">The glowmask texture path.</param>
     /// <param name="entityClass">The class the entity belongs to.</param>
-    /// <returns>The glowmask texture slot or -1 if adding the glowmask texture failed.</returns>
-    public static short AddGlowmaskTexture(int type, string glowmaskTexture, Type entityClass)
+    /// <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+    public static bool AssignGlowmaskTexture(short glowmaskSlot, int type, Type entityClass)
     {
-        short slot = RegisterAndCheckGlowmaskTexture(glowmaskTexture);
-        if (entityClass == typeof(Item))
-            itemToGlowmask[type] = slot;
-        else if (entityClass == typeof(NPC))
-            npcToGlowmask[type] = slot;
+        if (entityClass == typeof(Item) || entityClass == typeof(ModItem))
+            itemToGlowmask[type] = glowmaskSlot;
+        else if (entityClass == typeof(NPC) || entityClass == typeof(ModNPC))
+            npcToGlowmask[type] = glowmaskSlot;
         else
-            slot = -1;
-        return slot;
+            return false; // Not supported
+        return true;
     }
 
     /// <summary>
-    /// Assigns a glowmask texture to the given entity if possible.
+    /// Assigns a glowmask slot to the given entity if possible.
     /// </summary>
+    /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
     /// <param name="entity">The entity.</param>
-    /// <param name="glowmaskTexture">The glowmask texture path.</param>
-    /// <returns>The glowmask texture slot. Returns -1 if the entity isn't supported by the mod.</returns>
-    public static short AddGlowmaskTexture(Entity entity, string glowmaskTexture)
+    /// <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+    public static bool AssignGlowmaskTexture(short glowmaskSlot, Entity entity)
     {
         if (entity is Item item)
-            return AddGlowmaskTexture(item.type, glowmaskTexture, typeof(Item));
+            return AssignGlowmaskTexture(glowmaskSlot, item.type, typeof(Item));
         else if (entity is NPC npc)
-            return AddGlowmaskTexture(npc.type, glowmaskTexture, typeof(NPC));
-        return -1;
+            return AssignGlowmaskTexture(glowmaskSlot, npc.type, typeof(NPC));
+        return false; // Not supported
     }
 
     /// <summary>
-    /// Assigns a glowmask texture to the given mod type if possible.
+    /// Assigns a glowmask slot to the given mod type if possible.
     /// </summary>
+    /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
     /// <param name="modType">The mod type.</param>
-    /// <param name="glowmaskTexture">The glowmask texture path. Defaults to <c>modType.Texture + "_Glow"</c></param>
-    /// <returns>The glowmask texture slot. Returns -1 if the mod type isn't supported by the mod.</returns>
-    public static short AddGlowmaskTexture(ModType modType, string glowmaskTexture = null)
+    /// <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+    public static bool AssignGlowmaskTexture(short glowmaskSlot, ModType modType)
     {
         if (modType is ModItem modItem)
-        {
-            glowmaskTexture ??= modItem.Texture + "_Glow";
-            return AddGlowmaskTexture(modItem.Type, glowmaskTexture, typeof(Item));
-        }
+            return AssignGlowmaskTexture(glowmaskSlot, modItem.Type, typeof(Item));
         else if (modType is ModNPC modNPC)
-        {
-            glowmaskTexture ??= modNPC.Texture + "_Glow";
-            return AddGlowmaskTexture(modNPC.Type, glowmaskTexture, typeof(NPC));
-        }
-        return -1; // Not supported
+            return AssignGlowmaskTexture(glowmaskSlot, modNPC.Type, typeof(NPC));
+        return false; // Not supported
+    }
+
+    /// <summary>
+    /// Registers and assigns a glowmask texture to the given entity type if possible.
+    /// </summary>
+    /// <param name="type">The type of the entity.</param>
+    /// <param name="glowmaskTexture">The path to the glowmask texture.</param>
+    /// <param name="entityClass">The type the entity belongs to.</param>
+    /// <param name="glowmaskSlot">The slot of the glowmask texture.</param>
+    /// <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+    public static bool TryAddGlowmaskTexture(int type, string glowmaskTexture, Type entityClass, out short glowmaskSlot)
+    {
+        glowmaskSlot = RegisterGlowmaskTexture(glowmaskTexture);
+        if (AssignGlowmaskTexture(glowmaskSlot, type, entityClass))
+            return true;
+        else
+            return false; // Not supported
+    }
+
+    public static bool TryAddGlowmaskTexture(string glowmaskTexture, Entity entity, out short glowmaskSlot)
+    {
+        glowmaskSlot = RegisterGlowmaskTexture(glowmaskTexture);
+        if (AssignGlowmaskTexture(glowmaskSlot, entity))
+            return true;
+        else
+            return false; // Not supported
+    }
+
+    public static bool TryAddGlowmaskTexture(string glowmaskTexture, ModType modType, out short glowmaskSlot)
+    {
+        glowmaskSlot = RegisterGlowmaskTexture(glowmaskTexture);
+        if (AssignGlowmaskTexture(glowmaskSlot, modType))
+            return true;
+        else
+            return false; // Not supported
     }
 
     /// <summary>
@@ -132,9 +166,9 @@ public static class GlowmaskLoader
     public static short GetGlowmaskSlot(int type, Type entityClass)
     {
         short slot = -1;
-        if (entityClass == typeof(Item))
+        if (entityClass == typeof(Item) || entityClass == typeof(ModItem))
             itemToGlowmask.TryGetValue(type, out slot);
-        else if (entityClass == typeof(NPC))
+        else if (entityClass == typeof(NPC) || entityClass == typeof(ModNPC))
             npcToGlowmask.TryGetValue(type, out slot);
         return slot;
     }

@@ -17,30 +17,47 @@
             <para/> Currently only supports adding glowmasks to <see cref="T:Terraria.Item"/>s<see/> and <see cref="T:Terraria.NPC"/>s<see/>.
             </summary>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AddGlowmaskTexture(System.Int32,System.String,System.Type)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.RegisterGlowmaskTexture(System.String)">
             <summary>
-            Assigns a glowmask texture to the given entity type if possible.
+            Registers a glowmask texture but doesn't assign it to any entity type.
             </summary>
+            <param name="glowmaskTexture">The path to the glowmask texture.</param>
+            <returns>The slot corresponding to the glowmask.</returns>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture(System.Int16,System.Int32,System.Type)">
+            <summary>
+            Assigns a glowmask slot to the given entity type if possible.
+            </summary>
+            <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
             <param name="type">Type of the entity.</param>
-            <param name="glowmaskTexture">The glowmask texture path.</param>
             <param name="entityClass">The class the entity belongs to.</param>
-            <returns>The glowmask texture slot or -1 if adding the glowmask texture failed.</returns>
+            <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AddGlowmaskTexture(Terraria.Entity,System.String)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture(System.Int16,Terraria.Entity)">
             <summary>
-            Assigns a glowmask texture to the given entity if possible.
+            Assigns a glowmask slot to the given entity if possible.
             </summary>
+            <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
             <param name="entity">The entity.</param>
-            <param name="glowmaskTexture">The glowmask texture path.</param>
-            <returns>The glowmask texture slot. Returns -1 if the entity isn't supported by the mod.</returns>
+            <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AddGlowmaskTexture(Terraria.ModLoader.ModType,System.String)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture(System.Int16,Terraria.ModLoader.ModType)">
             <summary>
-            Assigns a glowmask texture to the given mod type if possible.
+            Assigns a glowmask slot to the given mod type if possible.
             </summary>
+            <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
             <param name="modType">The mod type.</param>
-            <param name="glowmaskTexture">The glowmask texture path. Defaults to <c>modType.Texture + "_Glow"</c></param>
-            <returns>The glowmask texture slot. Returns -1 if the mod type isn't supported by the mod.</returns>
+            <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.TryAddGlowmaskTexture(System.Int32,System.String,System.Type,System.Int16@)">
+            <summary>
+            Registers and assigns a glowmask texture to the given entity type if possible.
+            </summary>
+            <param name="type">The type of the entity.</param>
+            <param name="glowmaskTexture">The path to the glowmask texture.</param>
+            <param name="entityClass">The type the entity belongs to.</param>
+            <param name="glowmaskSlot">The slot of the glowmask texture.</param>
+            <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
         </member>
         <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot(System.String)">
             <summary>
