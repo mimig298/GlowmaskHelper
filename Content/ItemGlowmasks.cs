@@ -7,7 +7,7 @@ internal class ItemGlowmasks : GlobalItem
 {
     public override bool AppliesToEntity(Item entity, bool lateInstantiation)
     {
-        return GlowmaskLoader.GetGlowmaskSlot(entity) != -1;
+        return GlowmaskLoader.GetGlowmaskSlot(entity) > 0;
     }
 
     public override void SetDefaults(Item entity)
