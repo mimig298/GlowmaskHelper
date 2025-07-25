@@ -49,7 +49,7 @@
             <param name="modType">The mod type.</param>
             <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.TryAddGlowmaskTexture(System.Int32,System.String,System.Type,System.Int16@)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.TryAddGlowmaskTexture(System.String,System.Int32,System.Type,System.Int16@)">
             <summary>
             Registers and assigns a glowmask texture to the given entity type if possible.
             </summary>

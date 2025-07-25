@@ -47,6 +47,13 @@ public static class GlowmaskLoader
                 TryAddGlowmaskTexture(modNPC.Texture + "_Glow", modNPC.NPC.type, typeof(NPC), out _);
             }
         }
+        foreach (ModTile modTile in ModContent.GetContent<ModTile>())
+        {
+            if (modTile.GetType().GetAttribute<AutoloadGlowmask>() != null)
+            {
+                TryAddGlowmaskTexture(modTile.Texture + "_Glow", modTile.Type, typeof(Tile), out _);
+            }
+        }
     }
 
     /// <summary>
@@ -80,6 +87,8 @@ public static class GlowmaskLoader
             itemToGlowmask[type] = glowmaskSlot;
         else if (entityClass == typeof(NPC) || entityClass == typeof(ModNPC))
             npcToGlowmask[type] = glowmaskSlot;
+        else if (entityClass == typeof(Tile) || entityClass == typeof(ModTile))
+            Main.tileGlowMask[type] = glowmaskSlot;
         else
             return false; // Not supported
         return true;
@@ -112,6 +121,8 @@ public static class GlowmaskLoader
             return AssignGlowmaskTexture(glowmaskSlot, modItem.Type, typeof(Item));
         else if (modType is ModNPC modNPC)
             return AssignGlowmaskTexture(glowmaskSlot, modNPC.Type, typeof(NPC));
+        else if (modType is ModTile modTile)
+            return AssignGlowmaskTexture(glowmaskSlot, modTile.Type, typeof(Tile));
         return false; // Not supported
     }
 
@@ -170,6 +181,8 @@ public static class GlowmaskLoader
             itemToGlowmask.TryGetValue(type, out slot);
         else if (entityClass == typeof(NPC) || entityClass == typeof(ModNPC))
             npcToGlowmask.TryGetValue(type, out slot);
+        else if (entityClass == typeof(Tile) || entityClass == typeof(ModTile))
+            slot = Main.tileGlowMask[type];
         return slot;
     }
 
@@ -198,6 +211,8 @@ public static class GlowmaskLoader
             return GetGlowmaskSlot(modItem.Type, typeof(Item));
         if (modType is ModNPC modNPC)
             return GetGlowmaskSlot(modNPC.Type, typeof(NPC));
+        if (modType is ModTile modTile)
+            return GetGlowmaskSlot(modTile.Type, typeof(Tile));
         return -1; // Not supported
     }
 
