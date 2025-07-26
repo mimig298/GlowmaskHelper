@@ -24,69 +24,70 @@
             <param name="glowmaskTexture">The path to the glowmask texture.</param>
             <returns>The slot corresponding to the glowmask.</returns>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture(System.Int16,System.Int32,System.Type)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture_Item(System.Int16,System.Int32)">
             <summary>
-            Assigns a glowmask slot to the given entity type if possible.
+            Assigns a glowmask slot to the given item type.
             </summary>
             <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
-            <param name="type">Type of the entity.</param>
-            <param name="entityClass">The class the entity belongs to.</param>
-            <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+            <param name="type">Type of the item.</param>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture(System.Int16,Terraria.Entity)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture_NPC(System.Int16,System.Int32)">
             <summary>
-            Assigns a glowmask slot to the given entity if possible.
+            Assigns a glowmask slot to the given NPC type.
             </summary>
             <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
-            <param name="entity">The entity.</param>
-            <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+            <param name="type">Type of the NPC.</param>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture(System.Int16,Terraria.ModLoader.ModType)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture_Equip(System.Int16,Terraria.ModLoader.EquipType,System.Int32)">
             <summary>
-            Assigns a glowmask slot to the given mod type if possible.
+            Assigns a glowmask texture to the given equip type and slot.
             </summary>
             <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
-            <param name="modType">The mod type.</param>
-            <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+            <param name="equipType">The <see cref="T:Terraria.ModLoader.EquipType"/> of the equip texture.</param>
+            <param name="equipSlot">The slot of the equip texture.</param>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.TryAddGlowmaskTexture(System.String,System.Int32,System.Type,System.Int16@)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture_Equip_Arms(System.Int16,System.Int32)">
             <summary>
-            Registers and assigns a glowmask texture to the given entity type if possible.
+            Assigns a glowmask texture to the given body slot's arms.
             </summary>
-            <param name="type">The type of the entity.</param>
-            <param name="glowmaskTexture">The path to the glowmask texture.</param>
-            <param name="entityClass">The type the entity belongs to.</param>
-            <param name="glowmaskSlot">The slot of the glowmask texture.</param>
-            <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
+            <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
+            <param name="equipSlotBody">The slot of the corresponding body equip texture</param>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot(System.String)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot_Texture(System.String)">
             <summary>
             Gets the index of the glowmask texture corresponding to the given texture path.
             </summary>
             <param name="texture">The path to the glowmask texture.</param>
-            <returns>The slot of the glowmask texture, -1 if not found.</returns>
+            <returns>The slot of the glowmask texture or -1 if not found.</returns>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot(System.Int32,System.Type)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot_Item(System.Int32)">
             <summary>
-            Gets the index of the glowmask texture corresponding to the given entity's type.
+            Gets the index of the glowmask texture corresponding to the given item type.
             </summary>
-            <param name="type">The type of the entity.</param>
-            <param name="entityClass">The class the entity belongs to.</param>
-            <returns>The slot of the glowmask texture, -1 if not found.</returns>
+            <param name="type">The item type.</param>
+            <returns>The slot of the glowmask texture or -1 if not found.</returns>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot(Terraria.Entity)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot_NPC(System.Int32)">
             <summary>
-            Gets the index of the glowmask texture corresponding to the given entity's type.
+            Gets the index of the glowmask texture corresponding to the given NPC type.
             </summary>
-            <param name="entity">The entity.</param>
-            <returns>The slot of the glowmask texture, -1 if not found.</returns>
+            <param name="type">The NPC type.</param>
+            <returns>The slot of the glowmask texture or -1 if not found.</returns>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot(Terraria.ModLoader.ModType)">
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot_Equip(Terraria.ModLoader.EquipType,System.Int32)">
             <summary>
-            Gets the index of the glowmask texture corresponding to the mod type's entity.
+            Gets the index of the glowmask texture corresponding to the given equip type and slot.
             </summary>
-            <param name="modType">The mod type.</param>
-            <returns>The slot of the glowmask texture, -1 if not found.</returns>
+            <param name="equipType">The <see cref="T:Terraria.ModLoader.EquipType"/> of the equip texture.</param>
+            <param name="equipSlot">The slot of the equip texture.</param>
+            <returns>The slot of the glowmask texture or -1 if not found.</returns>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot_Equip_Arms(System.Int32)">
+            <summary>
+            Gets the index of the glowmask texture corresponding to the given body equip's arms.
+            </summary>
+            <param name="equipSlotBody">The slot of the corresponding body equip texture.</param>
+            <returns>The slot of the glowmask texture or -1 if not found.</returns>
         </member>
     </members>
 </doc>

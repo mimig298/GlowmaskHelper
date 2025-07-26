@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Utilities;
@@ -24,6 +25,8 @@ public static class GlowmaskLoader
     internal static IDictionary<string, short> glowmasks = new Dictionary<string, short>();
     internal static IDictionary<int, short> itemToGlowmask = new Dictionary<int, short>();
     internal static IDictionary<int, short> npcToGlowmask = new Dictionary<int, short>();
+    internal static IDictionary<Tuple<EquipType, int>, short> equipToGlowmask = new Dictionary<Tuple<EquipType, int>, short>();
+    internal static IDictionary<int, short> equipArmsToGlowmask = new Dictionary<int, short>();
 
     public static int GlowmaskCount => nextGlowmask;
 
@@ -34,24 +37,45 @@ public static class GlowmaskLoader
 
         foreach (ModItem modItem in ModContent.GetContent<ModItem>())
         {
-            if (modItem.GetType().GetAttribute<AutoloadGlowmask>() != null)
-            {
-                if (TryAddGlowmaskTexture(modItem.Texture + "_Glow", modItem.Item.type, typeof(Item), out short glowmaskSlot))
-                    modItem.Item.glowMask = glowmaskSlot;
-            }
+            Type type = modItem.GetType();
+            if (type.GetAttribute<AutoloadGlowmask>() == null)
+                continue;
+
+            short glowmaskSlot = RegisterGlowmaskTexture(modItem.Texture + "_Glow");
+            AssignGlowmaskTexture_Item(glowmaskSlot, modItem.Type);
+            modItem.Item.glowMask = glowmaskSlot;
         }
+
         foreach (ModNPC modNPC in ModContent.GetContent<ModNPC>())
         {
             if (modNPC.GetType().GetAttribute<AutoloadGlowmask>() != null)
             {
-                TryAddGlowmaskTexture(modNPC.Texture + "_Glow", modNPC.NPC.type, typeof(NPC), out _);
+                AssignGlowmaskTexture_NPC(RegisterGlowmaskTexture(modNPC.Texture + "_Glow"), modNPC.Type);
             }
         }
+
         foreach (ModTile modTile in ModContent.GetContent<ModTile>())
         {
             if (modTile.GetType().GetAttribute<AutoloadGlowmask>() != null)
             {
-                TryAddGlowmaskTexture(modTile.Texture + "_Glow", modTile.Type, typeof(Tile), out _);
+                Main.tileGlowMask[modTile.Type] = RegisterGlowmaskTexture(modTile.Texture + "_Glow");
+            }
+        }
+
+        FieldInfo equipTexturesFieldInfo = typeof(EquipLoader).GetField("equipTextures", BindingFlags.Static | BindingFlags.NonPublic);
+        Dictionary<EquipType, Dictionary<int, EquipTexture>> equipTextures = (Dictionary<EquipType, Dictionary<int, EquipTexture>>)equipTexturesFieldInfo.GetValue(null);
+        foreach (var equipTypeTexturePair in equipTextures)
+        {
+            EquipType equipType = equipTypeTexturePair.Key;
+            foreach (var equipSlotTexturePair in equipTypeTexturePair.Value)
+            {
+                EquipTexture equipTexture = equipSlotTexturePair.Value;
+                if (equipTexture.GetType().GetAttribute<AutoloadGlowmask>() != null || (equipTexture.Item != null && equipTexture.Item.GetType().GetAttribute<AutoloadGlowmask>() != null))
+                {
+                    AssignGlowmaskTexture_Equip(RegisterGlowmaskTexture(equipTexture.Texture + "_Glow"), equipType, equipSlotTexturePair.Key);
+                    if (equipType == EquipType.Body)
+                        AssignGlowmaskTexture_Equip_Arms(RegisterGlowmaskTexture(equipTexture.Texture + "_Arms_Glow"), equipSlotTexturePair.Key);
+                }
             }
         }
     }
@@ -69,152 +93,79 @@ public static class GlowmaskLoader
         short slot = nextGlowmask++;
         glowmasks[glowmaskTexture] = slot;
 
-        ModContent.Request<Texture2D>(glowmaskTexture, AssetRequestMode.DoNotLoad);
+        ModContent.Request<Texture2D>(glowmaskTexture);
 
         return slot;
     }
 
     /// <summary>
-    /// Assigns a glowmask slot to the given entity type if possible.
+    /// Assigns a glowmask slot to the given item type.
     /// </summary>
     /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
-    /// <param name="type">Type of the entity.</param>
-    /// <param name="entityClass">The class the entity belongs to.</param>
-    /// <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
-    public static bool AssignGlowmaskTexture(short glowmaskSlot, int type, Type entityClass)
-    {
-        if (entityClass == typeof(Item) || entityClass == typeof(ModItem))
-            itemToGlowmask[type] = glowmaskSlot;
-        else if (entityClass == typeof(NPC) || entityClass == typeof(ModNPC))
-            npcToGlowmask[type] = glowmaskSlot;
-        else if (entityClass == typeof(Tile) || entityClass == typeof(ModTile))
-            Main.tileGlowMask[type] = glowmaskSlot;
-        else
-            return false; // Not supported
-        return true;
-    }
+    /// <param name="type">Type of the item.</param>
+    public static void AssignGlowmaskTexture_Item(short glowmaskSlot, int type) => itemToGlowmask[type] = glowmaskSlot;
 
     /// <summary>
-    /// Assigns a glowmask slot to the given entity if possible.
+    /// Assigns a glowmask slot to the given NPC type.
     /// </summary>
     /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
-    /// <param name="entity">The entity.</param>
-    /// <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
-    public static bool AssignGlowmaskTexture(short glowmaskSlot, Entity entity)
-    {
-        if (entity is Item item)
-            return AssignGlowmaskTexture(glowmaskSlot, item.type, typeof(Item));
-        else if (entity is NPC npc)
-            return AssignGlowmaskTexture(glowmaskSlot, npc.type, typeof(NPC));
-        return false; // Not supported
-    }
+    /// <param name="type">Type of the NPC.</param>
+    public static void AssignGlowmaskTexture_NPC(short glowmaskSlot, int type) => npcToGlowmask[type] = glowmaskSlot;
 
     /// <summary>
-    /// Assigns a glowmask slot to the given mod type if possible.
+    /// Assigns a glowmask texture to the given equip type and slot.
     /// </summary>
     /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
-    /// <param name="modType">The mod type.</param>
-    /// <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
-    public static bool AssignGlowmaskTexture(short glowmaskSlot, ModType modType)
-    {
-        if (modType is ModItem modItem)
-            return AssignGlowmaskTexture(glowmaskSlot, modItem.Type, typeof(Item));
-        else if (modType is ModNPC modNPC)
-            return AssignGlowmaskTexture(glowmaskSlot, modNPC.Type, typeof(NPC));
-        else if (modType is ModTile modTile)
-            return AssignGlowmaskTexture(glowmaskSlot, modTile.Type, typeof(Tile));
-        return false; // Not supported
-    }
+    /// <param name="equipType">The <see cref="EquipType"/> of the equip texture.</param>
+    /// <param name="equipSlot">The slot of the equip texture.</param>
+    public static void AssignGlowmaskTexture_Equip(short glowmaskSlot, EquipType equipType, int equipSlot) => equipToGlowmask[Tuple.Create(equipType, equipSlot)] = glowmaskSlot;
 
     /// <summary>
-    /// Registers and assigns a glowmask texture to the given entity type if possible.
+    /// Assigns a glowmask texture to the given body slot's arms.
     /// </summary>
-    /// <param name="type">The type of the entity.</param>
-    /// <param name="glowmaskTexture">The path to the glowmask texture.</param>
-    /// <param name="entityClass">The type the entity belongs to.</param>
-    /// <param name="glowmaskSlot">The slot of the glowmask texture.</param>
-    /// <returns><see langword="true"/> the glowmask was assigned successfully.</returns>
-    public static bool TryAddGlowmaskTexture(string glowmaskTexture, int type, Type entityClass, out short glowmaskSlot)
-    {
-        glowmaskSlot = RegisterGlowmaskTexture(glowmaskTexture);
-        if (AssignGlowmaskTexture(glowmaskSlot, type, entityClass))
-            return true;
-        else
-            return false; // Not supported
-    }
-
-    public static bool TryAddGlowmaskTexture(string glowmaskTexture, Entity entity, out short glowmaskSlot)
-    {
-        glowmaskSlot = RegisterGlowmaskTexture(glowmaskTexture);
-        if (AssignGlowmaskTexture(glowmaskSlot, entity))
-            return true;
-        else
-            return false; // Not supported
-    }
-
-    public static bool TryAddGlowmaskTexture(string glowmaskTexture, ModType modType, out short glowmaskSlot)
-    {
-        glowmaskSlot = RegisterGlowmaskTexture(glowmaskTexture);
-        if (AssignGlowmaskTexture(glowmaskSlot, modType))
-            return true;
-        else
-            return false; // Not supported
-    }
+    /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
+    /// <param name="equipSlotBody">The slot of the corresponding body equip texture</param>
+    public static void AssignGlowmaskTexture_Equip_Arms(short glowmaskSlot, int equipSlotBody) => equipArmsToGlowmask[equipSlotBody] = glowmaskSlot;
 
     /// <summary>
     /// Gets the index of the glowmask texture corresponding to the given texture path.
     /// </summary>
     /// <param name="texture">The path to the glowmask texture.</param>
-    /// <returns>The slot of the glowmask texture, -1 if not found.</returns>
-    public static short GetGlowmaskSlot(string texture) => glowmasks.TryGetValue(texture, out short slot) ? slot : (short)-1;
+    /// <returns>The slot of the glowmask texture or -1 if not found.</returns>
+    public static short GetGlowmaskSlot_Texture(string texture) => glowmasks.TryGetValue(texture, out short slot) ? slot : (short)-1;
 
     /// <summary>
-    /// Gets the index of the glowmask texture corresponding to the given entity's type.
+    /// Gets the index of the glowmask texture corresponding to the given item type.
     /// </summary>
-    /// <param name="type">The type of the entity.</param>
-    /// <param name="entityClass">The class the entity belongs to.</param>
-    /// <returns>The slot of the glowmask texture, -1 if not found.</returns>
-    public static short GetGlowmaskSlot(int type, Type entityClass)
+    /// <param name="type">The item type.</param>
+    /// <returns>The slot of the glowmask texture or -1 if not found.</returns>
+    public static short GetGlowmaskSlot_Item(int type) => itemToGlowmask.TryGetValue(type, out short slot) ? slot : (short)-1;
+
+    /// <summary>
+    /// Gets the index of the glowmask texture corresponding to the given NPC type.
+    /// </summary>
+    /// <param name="type">The NPC type.</param>
+    /// <returns>The slot of the glowmask texture or -1 if not found.</returns>
+    public static short GetGlowmaskSlot_NPC(int type) => npcToGlowmask.TryGetValue(type, out short slot) ? slot : (short)-1;
+
+    /// <summary>
+    /// Gets the index of the glowmask texture corresponding to the given equip type and slot.
+    /// </summary>
+    /// <param name="equipType">The <see cref="EquipType"/> of the equip texture.</param>
+    /// <param name="equipSlot">The slot of the equip texture.</param>
+    /// <returns>The slot of the glowmask texture or -1 if not found.</returns>
+    public static short GetGlowmaskSlot_Equip(EquipType equipType, int equipSlot)
     {
-        short slot = -1;
-        if (entityClass == typeof(Item) || entityClass == typeof(ModItem))
-            itemToGlowmask.TryGetValue(type, out slot);
-        else if (entityClass == typeof(NPC) || entityClass == typeof(ModNPC))
-            npcToGlowmask.TryGetValue(type, out slot);
-        else if (entityClass == typeof(Tile) || entityClass == typeof(ModTile))
-            slot = Main.tileGlowMask[type];
-        return slot;
+        Tuple<EquipType, int> key = Tuple.Create(equipType, equipSlot);
+        return equipToGlowmask.TryGetValue(key, out short slot) ? slot : (short)-1;
     }
 
     /// <summary>
-    /// Gets the index of the glowmask texture corresponding to the given entity's type.
+    /// Gets the index of the glowmask texture corresponding to the given body equip's arms.
     /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <returns>The slot of the glowmask texture, -1 if not found.</returns>
-    public static short GetGlowmaskSlot(Entity entity)
-    {
-        if (entity is Item item)
-            return GetGlowmaskSlot(item.type, typeof(Item));
-        if (entity is NPC npc)
-            return GetGlowmaskSlot(npc.type, typeof(NPC));
-        return -1; // Not supported
-    }
-
-    /// <summary>
-    /// Gets the index of the glowmask texture corresponding to the mod type's entity.
-    /// </summary>
-    /// <param name="modType">The mod type.</param>
-    /// <returns>The slot of the glowmask texture, -1 if not found.</returns>
-    public static short GetGlowmaskSlot(ModType modType)
-    {
-        if (modType is ModItem modItem)
-            return GetGlowmaskSlot(modItem.Type, typeof(Item));
-        if (modType is ModNPC modNPC)
-            return GetGlowmaskSlot(modNPC.Type, typeof(NPC));
-        if (modType is ModTile modTile)
-            return GetGlowmaskSlot(modTile.Type, typeof(Tile));
-        return -1; // Not supported
-    }
+    /// <param name="equipSlotBody">The slot of the corresponding body equip texture.</param>
+    /// <returns>The slot of the glowmask texture or -1 if not found.</returns>
+    public static short GetGlowmaskSlot_Equip_Arms(int equipSlotBody) => equipArmsToGlowmask.TryGetValue(equipSlotBody, out short slot) ? slot : (short)-1;
 
     internal static void ResizeAndFillArrays()
     {
