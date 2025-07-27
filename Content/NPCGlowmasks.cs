@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using ReLogic.Utilities;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
@@ -10,25 +9,20 @@ namespace GlowmaskHelper.Content;
 
 internal class NPCGlowmasks : GlobalNPC
 {
-    public override void Load()
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
     {
-        On_Main.DrawNPCDirect_Inner += DrawGlowmask;
+        return GlowmaskLoader.GetGlowmaskSlot_NPC(entity.type) > 0;
     }
 
-    private static void DrawGlowmask(On_Main.orig_DrawNPCDirect_Inner orig, Main self, SpriteBatch mySpriteBatch, NPC rCurrentNPC, bool behindTiles, Vector2 screenPos, ref Color npcColor)
+    public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
     {
-        orig(self, mySpriteBatch, rCurrentNPC, behindTiles, screenPos, ref npcColor);
+        Asset<Texture2D> originalTexture = TextureAssets.Npc[npc.type];
+        Asset<Texture2D> glowmask = TextureAssets.GlowMask[GlowmaskLoader.GetGlowmaskSlot_NPC(npc.type)];
+        Vector2 halfSize = npc.frame.Center();
+        SpriteEffects spriteEffects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+        Vector2 drawPos = new(npc.position.X - screenPos.X + (npc.width / 2) - originalTexture.Width() * npc.scale / 2f + halfSize.X * npc.scale, npc.position.Y - screenPos.Y + npc.height - originalTexture.Height() * npc.scale / (float)Main.npcFrameCount[npc.type] + halfSize.Y * npc.scale);
+        drawPos.Y += Main.NPCAddHeight(npc) + 4 + npc.gfxOffY;
 
-        if (rCurrentNPC.ModNPC?.GetType().GetAttribute<AutoloadGlowmask>() == null)
-            return;
-
-        Asset<Texture2D> originalTexture = TextureAssets.Npc[rCurrentNPC.type];
-        Asset<Texture2D> glowmask = TextureAssets.GlowMask[GlowmaskLoader.GetGlowmaskSlot_NPC(rCurrentNPC.type)];
-        Vector2 halfSize = rCurrentNPC.frame.Center();
-        SpriteEffects spriteEffects = rCurrentNPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        Vector2 drawPos = new(rCurrentNPC.position.X - screenPos.X + (rCurrentNPC.width / 2) - originalTexture.Width() * rCurrentNPC.scale / 2f + halfSize.X * rCurrentNPC.scale, rCurrentNPC.position.Y - screenPos.Y + rCurrentNPC.height - originalTexture.Height() * rCurrentNPC.scale / (float)Main.npcFrameCount[rCurrentNPC.type] + halfSize.Y * rCurrentNPC.scale);
-        drawPos.Y += Main.NPCAddHeight(rCurrentNPC) + 4 + rCurrentNPC.gfxOffY;
-
-        mySpriteBatch.Draw(glowmask.Value, drawPos, rCurrentNPC.frame, Color.White, rCurrentNPC.rotation, halfSize, rCurrentNPC.scale, spriteEffects, 0f);
+        spriteBatch.Draw(glowmask.Value, drawPos, npc.frame, Color.White, npc.rotation, halfSize, npc.scale, spriteEffects, 0f);
     }
 }
