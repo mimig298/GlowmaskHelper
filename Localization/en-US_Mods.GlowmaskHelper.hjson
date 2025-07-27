@@ -1,5 +1,1 @@
-Commands: {
-	ListGlowmasks: {
-		Description: Lists every glowmask registered with Glowmask Helper
-	}
-}
+Commands.ListGlowmasks.Description: Lists every glowmask registered with Glowmask Helper
