@@ -27,9 +27,9 @@ internal class ListGlowmasks : ModCommand
         }
         caller.Reply($"Found {moddedGlowmaskCount} glowmasks:");
 
-        foreach (string path in GlowmaskLoader.glowmasks.Keys)
+        foreach (var textureSlotPair in GlowmaskLoader.glowmasks)
         {
-            caller.Reply($"* {path}");
+            caller.Reply($"* {textureSlotPair.Value}: {textureSlotPair.Key}");
         }
     }
 }
