@@ -72,9 +72,10 @@ public static class GlowmaskLoader
                 EquipTexture equipTexture = equipSlotTexturePair.Value;
                 if (equipTexture.GetType().GetAttribute<AutoloadGlowmask>() != null || (equipTexture.Item != null && equipTexture.Item.GetType().GetAttribute<AutoloadGlowmask>() != null))
                 {
-                    AssignGlowmaskTexture_Equip(RegisterGlowmaskTexture(equipTexture.Texture + "_Glow"), equipType, equipSlotTexturePair.Key);
+                    short glowmaskSlot = RegisterGlowmaskTexture(equipTexture.Texture + "_Glow");
+                    AssignGlowmaskTexture_Equip(glowmaskSlot, equipType, equipSlotTexturePair.Key);
                     if (equipType == EquipType.Body)
-                        AssignGlowmaskTexture_Equip_Arms(RegisterGlowmaskTexture(equipTexture.Texture + "_Arms_Glow"), equipSlotTexturePair.Key);
+                        AssignGlowmaskTexture_Equip_Arms(glowmaskSlot, equipSlotTexturePair.Key);
                 }
             }
         }
