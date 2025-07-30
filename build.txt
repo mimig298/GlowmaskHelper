@@ -2,5 +2,4 @@ displayName = Glowmask Helper
 author = mimig298
 version = 0.1
 includeSource = true
-buildIgnore = Content/DebugTests/*
 homepage = https://github.com/mimig298/GlowmaskHelper
