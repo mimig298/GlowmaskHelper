@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using ReLogic.Utilities;
 using Terraria;
 using Terraria.GameContent;
