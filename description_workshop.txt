@@ -1,8 +1,14 @@
 [b] This is a library mod. It doesn't directly add any content to the game and is meant to be used as a dependency by other mods. [/b]
 
-Are you tired of having to write the same long code every time you want to add a glowmask to something in your mod? Or do you just not know how to do it?
-This mod makes this process automatic for you!
+Glowmask code can be quite repetitive and boring to write. Furthermore, there are some situations where it's very difficult to implement, as it's not supported in a lot of cases. Worst of all, vanilla has it easy - everything is autoloaded and (mostly) automatically drawn!  
+Why can't modders have it easy too?
 
-With just one or two lines of code, you can apply a glowmask texture to any item or NPC you create! (after you set up the references, but that's easy)
+Glowmask Helper does exactly that! With just one line of code, you can add a custom glowmask to practically every entity vanilla applies them to, which includes items, NPCs, tiles and armor. Additionally, this mod provides tools which can help making custom drawing code for your glowmasks, or even for entities it doesn't currently support.
+Letting Glowmask Helper handle drawing glowmasks for you also draws the glowmask in situations where it would be difficult to implement manually, mainly for held items and armor.
 
-For the full guide on how to use Glowmask Helper, visit our [url=https://github.com/mimig298/GlowmaskHelper] Github repository [/url].
+Autoloading and drawing a simple glowmask can be done by adding the AutoloadGlowmask attribute to your class:
+[code] [AutoloadGlowmask]
+class GlowmaskItem : ModItem { [/code]
+The additional glowmask tools are all contained in the GlowmaskLoader class, where you can register glowmask textures for autoloading, assign them to entities for automatic drawing, or access previously added glowmasks.
+
+For the full guide on how to use Glowmask Helper, visit our [url=https://github.com/mimig298/GlowmaskHelper/wiki] wiki on GitHub [/url]. It is also on this repository that you should submit bug reports or improvement suggestions. The mod is open source as well, so you are free to explore it and contribute to it if you wish.

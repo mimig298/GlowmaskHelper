@@ -1,5 +1,5 @@
 displayName = Glowmask Helper
 author = mimig298
-version = 0.1
+version = 0.2
 includeSource = true
 homepage = https://github.com/mimig298/GlowmaskHelper
