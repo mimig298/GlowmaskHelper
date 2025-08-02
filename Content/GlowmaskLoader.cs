@@ -12,7 +12,7 @@ namespace GlowmaskHelper.Content;
 /// <summary>
 /// This class serves as the central place to store and register custom glowmasks, and can be used to access information about them.<br/>
 /// Using an <see cref="AutoloadGlowmask"/> attribute in your classes will do all the special logic for you, so you usually don't need to use this class if that's the case.
-/// <para/> Currently supports adding glowmasks to <see cref="ModItem"/>s, <see cref="ModNPC"/>s, <see cref="ModTile"/>s and armour items.
+/// <para/> Currently supports adding glowmasks to <see cref="ModItem"/>s, <see cref="ModNPC"/>s, <see cref="ModTile"/>s, <see cref="ModWall"/>s, and armour items.
 /// </summary>
 public static class GlowmaskLoader
 {
@@ -26,6 +26,7 @@ public static class GlowmaskLoader
     internal static IDictionary<int, short> npcToGlowmask = new Dictionary<int, short>();
     internal static IDictionary<Tuple<EquipType, int>, short> equipToGlowmask = new Dictionary<Tuple<EquipType, int>, short>();
     internal static IDictionary<int, short> equipArmsToGlowmask = new Dictionary<int, short>();
+    internal static IDictionary<int, short> wallToGlowmask = new Dictionary<int, short>();
 
     public static int GlowmaskCount => nextGlowmask;
 
@@ -58,6 +59,14 @@ public static class GlowmaskLoader
             if (modTile.GetType().GetAttribute<AutoloadGlowmask>() != null)
             {
                 Main.tileGlowMask[modTile.Type] = RegisterGlowmaskTexture(modTile.Texture + "_Glow");
+            }
+        }
+
+        foreach (ModWall modWall in ModContent.GetContent<ModWall>())
+        {
+            if (modWall.GetType().GetAttribute<AutoloadGlowmask>() != null)
+            {
+                AssignGlowmaskTexture_Wall(RegisterGlowmaskTexture(modWall.Texture + "_Glow"), modWall.Type);
             }
         }
 
@@ -121,6 +130,13 @@ public static class GlowmaskLoader
     public static void AssignGlowmaskTexture_Equip(short glowmaskSlot, EquipType equipType, int equipSlot) => equipToGlowmask[Tuple.Create(equipType, equipSlot)] = glowmaskSlot;
 
     /// <summary>
+    /// Assigns a glowmask slot to the given wall type.
+    /// </summary>
+    /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
+    /// <param name="wallType">Type of the wall.</param>
+    public static void AssignGlowmaskTexture_Wall(short glowmaskSlot, int wallType) => wallToGlowmask[wallType] = glowmaskSlot;
+
+    /// <summary>
     /// Assigns a glowmask texture to the given body slot's arms.
     /// </summary>
     /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
@@ -166,6 +182,13 @@ public static class GlowmaskLoader
     /// <param name="equipSlotBody">The slot of the corresponding body equip texture.</param>
     /// <returns>The slot of the glowmask texture or -1 if not found.</returns>
     public static short GetGlowmaskSlot_Equip_Arms(int equipSlotBody) => equipArmsToGlowmask.TryGetValue(equipSlotBody, out short slot) ? slot : (short)-1;
+
+    /// <summary>
+    /// Gets the index of the glowmask texture corresponding to the given wall type.
+    /// </summary>
+    /// <param name="wallType">The wall type.</param>
+    /// <returns>The slot of the glowmask texture or -1 if not found.</returns>
+    public static short GetGlowmaskSlot_Wall(int wallType) => wallToGlowmask.TryGetValue(wallType, out short slot) ? slot : (short)-1;
 
     internal static void ResizeAndFillArrays()
     {

@@ -76,6 +76,12 @@ internal class ListGlowmasks : ModCommand
                 if (equipSlots.Count > 0)
                     caller.Reply($"  - Assigned as an arm texture for the equipment body types: {string.Join(", ", equipSlots)}");
             }
+            if (GlowmaskLoader.wallToGlowmask.Values.Contains(textureSlotPair.Value))
+            {
+                ICollection<int> wallTypes = GetKeysForValue(GlowmaskLoader.wallToGlowmask, textureSlotPair.Value);
+                if (wallTypes.Count > 0)
+                    caller.Reply($"  - Assigned to the wall types: {string.Join(", ", wallTypes)}");
+            }
         }
     }
 
