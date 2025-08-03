@@ -14,7 +14,7 @@
             <summary>
             This class serves as the central place to store and register custom glowmasks, and can be used to access information about them.<br/>
             Using an <see cref="T:GlowmaskHelper.Content.AutoloadGlowmask"/> attribute in your classes will do all the special logic for you, so you usually don't need to use this class if that's the case.
-            <para/> Currently supports adding glowmasks to <see cref="T:Terraria.ModLoader.ModItem"/>s, <see cref="T:Terraria.ModLoader.ModNPC"/>s, <see cref="T:Terraria.ModLoader.ModTile"/>s, <see cref="T:Terraria.ModLoader.ModWall"/>s, and armour items.
+            <para/> Currently supports adding glowmasks to <see cref="T:Terraria.ModLoader.ModItem"/>s, <see cref="T:Terraria.ModLoader.ModNPC"/>s, <see cref="T:Terraria.ModLoader.ModTile"/>s, <see cref="T:Terraria.ModLoader.ModWall"/>s, and <see cref="T:Terraria.ModLoader.EquipTexture"/>s.
             </summary>
         </member>
         <member name="M:GlowmaskHelper.Content.GlowmaskLoader.RegisterGlowmaskTexture(System.String)">

@@ -12,7 +12,7 @@ namespace GlowmaskHelper.Content;
 /// <summary>
 /// This class serves as the central place to store and register custom glowmasks, and can be used to access information about them.<br/>
 /// Using an <see cref="AutoloadGlowmask"/> attribute in your classes will do all the special logic for you, so you usually don't need to use this class if that's the case.
-/// <para/> Currently supports adding glowmasks to <see cref="ModItem"/>s, <see cref="ModNPC"/>s, <see cref="ModTile"/>s, <see cref="ModWall"/>s, and armour items.
+/// <para/> Currently supports adding glowmasks to <see cref="ModItem"/>s, <see cref="ModNPC"/>s, <see cref="ModTile"/>s, <see cref="ModWall"/>s, and <see cref="EquipTexture"/>s.
 /// </summary>
 public static class GlowmaskLoader
 {
