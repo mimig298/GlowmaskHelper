@@ -206,6 +206,9 @@ public static class GlowmaskLoader
         glowmasks.Clear();
         itemToGlowmask.Clear();
         npcToGlowmask.Clear();
+        equipToGlowmask.Clear();
+        equipArmsToGlowmask.Clear();
+        wallToGlowmask.Clear();
         Array.Resize(ref TextureAssets.GlowMask, VanillaGlowmaskCount);
     }
 }
