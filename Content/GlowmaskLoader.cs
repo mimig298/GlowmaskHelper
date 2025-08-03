@@ -94,7 +94,7 @@ public static class GlowmaskLoader
     /// </summary>
     /// <param name="glowmaskTexture">The path to the glowmask texture.</param>
     /// <returns>The slot corresponding to the glowmask.</returns>
-    public static short RegisterGlowmaskTexture(string glowmaskTexture)
+    private static short RegisterGlowmaskTexture(string glowmaskTexture) // make ts public when you fix this mod's problem
     {
         if (glowmasks.TryGetValue(glowmaskTexture, out short value))
             return value;
@@ -216,10 +216,6 @@ internal class GlowmaskLoaderSystem : ModSystem
     {
         GlowmaskLoader.Load();
         Mod.Logger.InfoFormat("Loaded {0} glowmasks", GlowmaskLoader.GlowmaskCount - GlowmaskLoader.VanillaGlowmaskCount);
-    }
-
-    public override void PostSetupContent()
-    {
         GlowmaskLoader.ResizeAndFillArrays();
         Mod.Logger.InfoFormat("Glowmask texture array resized to {0} elements", TextureAssets.GlowMask.Length);
     }
