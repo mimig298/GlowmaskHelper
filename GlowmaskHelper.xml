@@ -17,6 +17,15 @@
             <para/> Currently supports adding glowmasks to <see cref="T:Terraria.ModLoader.ModItem"/>s, <see cref="T:Terraria.ModLoader.ModNPC"/>s, <see cref="T:Terraria.ModLoader.ModTile"/>s, <see cref="T:Terraria.ModLoader.ModWall"/>s, and <see cref="T:Terraria.ModLoader.EquipTexture"/>s.
             </summary>
         </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.QueueGlowmaskRegistration(System.String)">
+            <summary>
+            Queues a glowmask texture for registration. This doesn't assign it to any entity type or give you the glowmask slot immediately.<br/>
+            The registration will be processed before your mod's <c>SetStaticDefaults()</c> hooks.<br/>
+            To get the glowmask slot after registration, call <see cref="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot_Texture(System.String)"/> with the same texture you provided here.
+            <para/><strong>Only call this during a <c>Load()</c> hook.</strong>
+            </summary>
+            <param name="glowmaskTexture">The path to the glowmask texture.</param>
+        </member>
         <member name="M:GlowmaskHelper.Content.GlowmaskLoader.RegisterGlowmaskTexture(System.String)">
             <summary>
             Registers a glowmask texture but doesn't assign it to any entity type.
