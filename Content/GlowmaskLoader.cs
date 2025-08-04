@@ -35,10 +35,16 @@ public static class GlowmaskLoader
         VanillaGlowmaskCount = TextureAssets.GlowMask.Length;
         nextGlowmask = (short)VanillaGlowmaskCount;
 
+        // Register glowmasks queued by mods
+        foreach (string queuedGlowmask in glowmasks.Keys)
+        {
+            RegisterGlowmaskTexture(queuedGlowmask);
+        }
+
+        // Register autoloaded glowmasks using the AutoloadGlowmask attribute.
         foreach (ModItem modItem in ModContent.GetContent<ModItem>())
         {
-            Type type = modItem.GetType();
-            if (type.GetAttribute<AutoloadGlowmask>() == null)
+            if (modItem.GetType().GetAttribute<AutoloadGlowmask>() == null)
                 continue;
 
             short glowmaskSlot = RegisterGlowmaskTexture(modItem.Texture + "_Glow");
@@ -87,6 +93,47 @@ public static class GlowmaskLoader
                 }
             }
         }
+
+        ResizeAndFillArrays();
+    }
+
+    // Hello person reading this! Are you interested in understanding why RegisterGlowmaskTexture is private and modders have to queue the glowmask?
+    // It's a bit complicated but I am here to help!
+    // Glowmask Helper was designed to work as closely as possible to how regular TML autoloading works.
+    // The main inspiration were the AutoloadEquip and AutoloadNPCHead attributes, hence the AutoloadGlowmask attribute.
+    // Now there is just one issue! TML's system is, well, TML's. It's integrated very deeply into the loading code for items and NPCs, in a sealed Register method and not calling any hook.
+    // There isn't even the option of detouring or IL edits since TML was made to mod Terraria, not itself, and as such doesn't provide any hooks for its own loading code.
+    // Because of that, there's the big block of code above in Load() that iterates every single ModItem, ModNPC and so on.
+    // Now that isn't that bad. HOWEVER! Modders should be able to register and assign glowmasks on their own, without having to use the AutoloadGlowmask attribute.
+    // Versatility! Usability! Accessibility! This is a library mod! This is what Glowmask Helper is all about! What kind of library mod has hardcoded, unadaptable logic??
+    // For that there's the RegisterGlowmaskTexture and AssignGlowmaskTexture methods. They are* public and can be used by modders to register glowmasks and assign them to entities wherever they want.
+    // But... uhhh... *when* do modders call them? Load()? Too early, glowmasks aren't registered yet! SetStaticDefaults()? Too late, array already resized!
+    // The original solution I worked on was to resize the arrays in PostSetupContent() instead, but that raises a few issues:
+    // 1. Mods should already have access to every correct value in SetStaticDefaults(), and this forces them to wait until PostSetupContent() and rewrite any crucial logic they may have.
+    // 2. If another mod resizes the TextureAssets.GlowMask array between Glowmask Helper reading its lenght and resizing it, everything will break.
+    // Ok... so resize the arrays in SetStaticDefaults() and have modders call RegisterGlowmaskTexture in Load()?
+    // That doesn't work either, since that opens up an interval between Load() and SetStaticDefaults() where the glowmask array could be resized by another mod.
+    // This is tricky... Reading the lenght of the glowmasks array and resizing it *must* happen in the same method, but doing so makes modders unable to register glowmasks manually...
+    // That's where the queueing system comes in. In Load(), modders tell Glowmask Helper that they want to register a glowmask texture.
+    // Unfortunately, they won't be able to get the glowmask slot right away since we can't read the lenght of the glowmask array yet, but they can always call GetGlowmaskSlot_Texture() later to get it.
+    // Then, in SetStaticDefaults(), Glowmask Helper will process the queue and register all glowmasks that were queued in Load().
+    // This way, by the start of any dependent mod's SetStaticDefaults(), all glowmasks will be registered and the glowmask array will be resized to the correct lenght.
+
+    /// <summary>
+    /// Queues a glowmask texture for registration. This doesn't assign it to any entity type or give you the glowmask slot immediately.<br/>
+    /// The registration will be processed before your mod's <c>SetStaticDefaults()</c> hooks.<br/>
+    /// To get the glowmask slot after registration, call <see cref="GetGlowmaskSlot_Texture(string)"/> with the same texture you provided here.
+    /// <para/><strong>Only call this during a <c>Load()</c> hook.</strong>
+    /// </summary>
+    /// <param name="glowmaskTexture">The path to the glowmask texture.</param>
+    public static void QueueGlowmaskRegistration(string glowmaskTexture)
+    {
+        if (!((GlowmaskHelper)ModLoader.GetMod("GlowmaskHelper")).IsLoading)
+        {
+            throw new Exception("QueueGlowmaskRegistration must be called during the Mod.Load stage.");
+        }
+
+        glowmasks[glowmaskTexture] = -1;
     }
 
     /// <summary>
@@ -94,10 +141,14 @@ public static class GlowmaskLoader
     /// </summary>
     /// <param name="glowmaskTexture">The path to the glowmask texture.</param>
     /// <returns>The slot corresponding to the glowmask.</returns>
-    private static short RegisterGlowmaskTexture(string glowmaskTexture) // make ts public when you fix this mod's problem
+    private static short RegisterGlowmaskTexture(string glowmaskTexture)
     {
-        if (glowmasks.TryGetValue(glowmaskTexture, out short value))
-            return value;
+        if (glowmasks.TryGetValue(glowmaskTexture, out short value) && value >= 0)
+        {
+            return value; 
+            // Already registered, return the existing slot
+            // If the glowmask is queued but not registered yet, we need to update it
+        }
 
         short slot = nextGlowmask++;
         glowmasks[glowmaskTexture] = slot;
@@ -217,9 +268,9 @@ internal class GlowmaskLoaderSystem : ModSystem
 {
     public override void SetStaticDefaults()
     {
+        ((GlowmaskHelper)Mod).IsLoading = false;
         GlowmaskLoader.Load();
         Mod.Logger.InfoFormat("Loaded {0} glowmasks", GlowmaskLoader.GlowmaskCount - GlowmaskLoader.VanillaGlowmaskCount);
-        GlowmaskLoader.ResizeAndFillArrays();
         Mod.Logger.InfoFormat("Glowmask texture array resized to {0} elements", TextureAssets.GlowMask.Length);
     }
 
