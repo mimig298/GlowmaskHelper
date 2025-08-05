@@ -6,8 +6,9 @@
     <members>
         <member name="T:GlowmaskHelper.Content.AutoloadGlowmask">
             <summary>
-            This attribute annotates a <see cref="T:Terraria.ModLoader.ModItem"/> or <see cref="T:Terraria.ModLoader.ModNPC"/> class to indicate that the game should autoload a glowmask texture for this entity.
-            <para/> The glowmask texture will be autoloaded from the regular texture + "_Glow". An error will be thrown if this texture is not found.
+            This attribute annotates a ModType to indicate that the game should autoload a glowmask texture for that entity.<br/>
+            The glowmask texture will be autoloaded from the regular texture + "_Glow". An error will be thrown if this texture is not found.
+            <para/> Currently supports adding glowmasks to <see cref="T:Terraria.ModLoader.ModItem"/>s, <see cref="T:Terraria.ModLoader.ModNPC"/>s, <see cref="T:Terraria.ModLoader.ModTile"/>s, <see cref="T:Terraria.ModLoader.ModWall"/>s, and <see cref="T:Terraria.ModLoader.EquipTexture"/>s.
             </summary>
         </member>
         <member name="T:GlowmaskHelper.Content.GlowmaskLoader">
@@ -55,19 +56,19 @@
             <param name="equipType">The <see cref="T:Terraria.ModLoader.EquipType"/> of the equip texture.</param>
             <param name="equipSlot">The slot of the equip texture.</param>
         </member>
-        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture_Wall(System.Int16,System.Int32)">
-            <summary>
-            Assigns a glowmask slot to the given wall type.
-            </summary>
-            <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
-            <param name="wallType">Type of the wall.</param>
-        </member>
         <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture_Equip_Arms(System.Int16,System.Int32)">
             <summary>
             Assigns a glowmask texture to the given body slot's arms.
             </summary>
             <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
             <param name="equipSlotBody">The slot of the corresponding body equip texture</param>
+        </member>
+        <member name="M:GlowmaskHelper.Content.GlowmaskLoader.AssignGlowmaskTexture_Wall(System.Int16,System.Int32)">
+            <summary>
+            Assigns a glowmask slot to the given wall type.
+            </summary>
+            <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
+            <param name="wallType">Type of the wall.</param>
         </member>
         <member name="M:GlowmaskHelper.Content.GlowmaskLoader.GetGlowmaskSlot_Texture(System.String)">
             <summary>
