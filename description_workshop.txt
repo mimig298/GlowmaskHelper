@@ -3,12 +3,12 @@
 Glowmask code can be quite repetitive and boring to write. Furthermore, there are some situations where it's very difficult to implement, as it's not supported in a lot of cases. Worst of all, vanilla has it easy - everything is autoloaded and (mostly) automatically drawn!  
 Why can't modders have it easy too?
 
-Glowmask Helper does exactly that! With just one line of code, you can add a custom glowmask to practically every entity vanilla applies them to, which includes items, NPCs, tiles and armor. Additionally, this mod provides tools which can help making custom drawing code for your glowmasks, or even for entities it doesn't currently support.
-Letting Glowmask Helper handle drawing glowmasks for you also draws the glowmask in situations where it would be difficult to implement manually, mainly for held items and armor.
+Glowmask Helper does exactly that! With just one line of code, you can add a custom glowmask to practically every entity vanilla applies them to, which includes items, NPCs, tiles, walls, armor, and accessories. Additionally, this mod provides tools which can help making custom drawing code for your glowmasks, or even for entities it doesn't currently support.
+Letting Glowmask Helper handle drawing glowmasks for you also draws the glowmask in situations where it would be difficult to implement manually, mainly for held items, armor, and accessories.
 
 Autoloading and drawing a simple glowmask can be done by adding the AutoloadGlowmask attribute to your class:
 [code] [AutoloadGlowmask]
 class GlowmaskItem : ModItem { [/code]
 The additional glowmask tools are all contained in the GlowmaskLoader class, where you can register glowmask textures for autoloading, assign them to entities for automatic drawing, or access previously added glowmasks.
 
-For the full guide on how to use Glowmask Helper, visit our [url=https://github.com/mimig298/GlowmaskHelper/wiki] wiki on GitHub [/url]. It is also on this repository that you should submit bug reports or improvement suggestions. The mod is open source as well, so you are free to explore it and contribute to it if you wish.
+For more information about Glowmask Helper, as well as the full usage guide, visit our [url=https://github.com/mimig298/GlowmaskHelper] GitHub repo [/url]. It is also on this repository that you should submit bug reports or improvement suggestions. The mod is open source as well, so you are free to explore it and contribute to it if you wish.
