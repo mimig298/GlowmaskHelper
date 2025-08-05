@@ -181,18 +181,18 @@ public static class GlowmaskLoader
     public static void AssignGlowmaskTexture_Equip(short glowmaskSlot, EquipType equipType, int equipSlot) => equipToGlowmask[Tuple.Create(equipType, equipSlot)] = glowmaskSlot;
 
     /// <summary>
-    /// Assigns a glowmask slot to the given wall type.
-    /// </summary>
-    /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
-    /// <param name="wallType">Type of the wall.</param>
-    public static void AssignGlowmaskTexture_Wall(short glowmaskSlot, int wallType) => wallToGlowmask[wallType] = glowmaskSlot;
-
-    /// <summary>
     /// Assigns a glowmask texture to the given body slot's arms.
     /// </summary>
     /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
     /// <param name="equipSlotBody">The slot of the corresponding body equip texture</param>
     public static void AssignGlowmaskTexture_Equip_Arms(short glowmaskSlot, int equipSlotBody) => equipArmsToGlowmask[equipSlotBody] = glowmaskSlot;
+
+    /// <summary>
+    /// Assigns a glowmask slot to the given wall type.
+    /// </summary>
+    /// <param name="glowmaskSlot">Slot of the glowmask texture to assign.</param>
+    /// <param name="wallType">Type of the wall.</param>
+    public static void AssignGlowmaskTexture_Wall(short glowmaskSlot, int wallType) => wallToGlowmask[wallType] = glowmaskSlot;
 
     /// <summary>
     /// Gets the index of the glowmask texture corresponding to the given texture path.
