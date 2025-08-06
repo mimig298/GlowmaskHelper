@@ -1,4 +1,4 @@
-Glowmask Helper is a library mod for Terraria designed to help modders implement custom glowmasks. It is created and maintained by mimig298, but contributions from anyone are welcome.
+Glowmask Helper is a library mod for Terraria designed to help modders implement custom [glowmasks](https://github.com/tModLoader/tModLoader/wiki/Basic-glowmask-guide). It is created and maintained by mimig298, but contributions from anyone are welcome.
 
 Glowmask Helper is available for Terraria 1.4.4, tModLoader versions 2025.6.3.0 and upwards. You can get it from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3542802408) (recommended) or download and install the source code manually.
 
