@@ -12,3 +12,5 @@ class GlowmaskItem : ModItem { [/code]
 The additional glowmask tools are all contained in the GlowmaskLoader class, where you can register glowmask textures for autoloading, assign them to entities for automatic drawing, or access previously added glowmasks.
 
 For more information about Glowmask Helper, as well as the full usage guide, visit our [url=https://github.com/mimig298/GlowmaskHelper] GitHub repo [/url]. It is also on this repository that you should submit bug reports or improvement suggestions. The mod is open source as well, so you are free to explore it and contribute to it if you wish.
+
+If you have any questions or issues with this mod, please contact me on the tModLoader Discord Server.
