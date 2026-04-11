@@ -1,6 +1,6 @@
 [b] This is a library mod. It doesn't directly add any content to the game and is meant to be used as a dependency by other mods. [/b]
 
-Glowmask code can be quite repetitive and boring to write. Furthermore, there are some situations where it's very difficult to implement, as it's not supported in a lot of cases. Worst of all, vanilla has it easy - everything is autoloaded and (mostly) automatically drawn!  
+[url=https://github.com/tModLoader/tModLoader/wiki/Basic-glowmask-guide] Glowmask [/url] code can be quite repetitive and boring to write. Furthermore, there are some situations where it's very difficult to implement, as it's not supported in a lot of cases. Worst of all, vanilla has it easy - everything is autoloaded and (mostly) automatically drawn!  
 Why can't modders have it easy too?
 
 Glowmask Helper does exactly that! With just one line of code, you can add a custom glowmask to practically every entity vanilla applies them to, which includes items, NPCs, tiles, walls, armor, and accessories. Additionally, this mod provides tools which can help making custom drawing code for your glowmasks, or even for entities it doesn't currently support.
@@ -12,3 +12,5 @@ class GlowmaskItem : ModItem { [/code]
 The additional glowmask tools are all contained in the GlowmaskLoader class, where you can register glowmask textures for autoloading, assign them to entities for automatic drawing, or access previously added glowmasks.
 
 For more information about Glowmask Helper, as well as the full usage guide, visit our [url=https://github.com/mimig298/GlowmaskHelper] GitHub repo [/url]. It is also on this repository that you should submit bug reports or improvement suggestions. The mod is open source as well, so you are free to explore it and contribute to it if you wish.
+
+If you have any questions or issues with this mod, please contact me on the tModLoader Discord Server.
