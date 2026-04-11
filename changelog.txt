@@ -1,0 +1,4 @@
+﻿[h1] Version 1.0.1 [/h1]
+
+This is a simple patch that fixes NPC glowmasks being incorrectly drawn when rotated. Thanks to the user Mortis™ for reporting this bug.
+No action is required on your part if one of your mods depends on Glowmask Helper.
