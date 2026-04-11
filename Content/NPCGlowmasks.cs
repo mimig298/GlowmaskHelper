@@ -18,11 +18,12 @@ internal class NPCGlowmasks : GlobalNPC
     {
         Asset<Texture2D> originalTexture = TextureAssets.Npc[npc.type];
         Asset<Texture2D> glowmask = TextureAssets.GlowMask[GlowmaskLoader.GetGlowmaskSlot_NPC(npc.type)];
-        Vector2 halfSize = npc.frame.Center();
+        Vector2 origin = new(originalTexture.Width() / 2, originalTexture.Height() / Main.npcFrameCount[npc.type] / 2);
         SpriteEffects spriteEffects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        Vector2 drawPos = new(npc.position.X - screenPos.X + (npc.width / 2) - originalTexture.Width() * npc.scale / 2f + halfSize.X * npc.scale, npc.position.Y - screenPos.Y + npc.height - originalTexture.Height() * npc.scale / (float)Main.npcFrameCount[npc.type] + halfSize.Y * npc.scale);
+        Vector2 drawPos = new(npc.position.X - screenPos.X + (npc.width / 2) - originalTexture.Width() * npc.scale / 2f + origin.X * npc.scale, npc.position.Y - screenPos.Y + npc.height - originalTexture.Height() * npc.scale / Main.npcFrameCount[npc.type] + origin.Y * npc.scale);
+
         drawPos.Y += Main.NPCAddHeight(npc) + 4 + npc.gfxOffY;
 
-        spriteBatch.Draw(glowmask.Value, drawPos, npc.frame, Color.White, npc.rotation, halfSize, npc.scale, spriteEffects, 0f);
+        spriteBatch.Draw(glowmask.Value, drawPos, npc.frame, Color.White, npc.rotation, origin, npc.scale, spriteEffects, 0f);
     }
 }
