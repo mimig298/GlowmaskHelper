@@ -255,7 +255,7 @@ internal class FaceAccGlowmaskLayer : PlayerDrawLayer
         Asset<Texture2D> glowmaskTexture = TextureAssets.GlowMask[GlowmaskLoader.GetGlowmaskSlot_Equip(EquipType.Face, drawInfo.drawPlayer.face)];
 
         Vector2 position = Vector2.Zero;
-        if (drawInfo.drawPlayer.mount.Active && drawInfo.drawPlayer.mount.Type == 52)
+        if (drawInfo.drawPlayer.mount.Active && drawInfo.drawPlayer.mount.Type == MountID.Wolf)
             position = new Vector2(28f, -2f);
         position *= drawInfo.drawPlayer.Directions;
         position += new Vector2((int)(drawInfo.Position.X - Main.screenPosition.X - drawInfo.drawPlayer.bodyFrame.Width / 2 + drawInfo.drawPlayer.width / 2), (int)(drawInfo.Position.Y - Main.screenPosition.Y + drawInfo.drawPlayer.height - drawInfo.drawPlayer.bodyFrame.Height + 4f)) + drawInfo.drawPlayer.headPosition + drawInfo.headVect;
